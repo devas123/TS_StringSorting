@@ -13,6 +13,7 @@ public class StringSorting {
 	public static Logger logger = Logger.getLogger(StringSorting.class.getName());
 
 	private String original;
+	//FIXME
 	private ArrayList<String> array;
 	private Map<Character, ArrayList<String>> map = new HashMap<>();
 
@@ -29,12 +30,14 @@ public class StringSorting {
 		for (String stringSplitResult : splitResult) {
 			Character key = null;
 
+			//TODO: проверка с помощью try/catch
 			try {
 				key = Character.toLowerCase(stringSplitResult.charAt(0));
 			} catch (StringIndexOutOfBoundsException e) {
 				logger.log(Level.WARNING, "String must be not empty");
 			}
 
+			//TODO: compute?
 			ArrayList<String> arrayListByKey = map.get(key);
 
 			if (arrayListByKey != null) {
@@ -44,7 +47,6 @@ public class StringSorting {
 				arrayListByKey.add(stringSplitResult);
 				map.put(key, arrayListByKey);
 			}
-//			
 		}
 	}
 
@@ -55,8 +57,10 @@ public class StringSorting {
 
 			ArrayList<String> arrayListForSort = map.get(key);
 
+			//FIXME - comparator создается каждый раз в цикле. Зачем?
 			arrayListForSort.sort(new DefaultComparator());
 
+			//FIXME? put - не бесплатая операция, она необходима тут?
 			map.put(key, arrayListForSort);
 		}
 
