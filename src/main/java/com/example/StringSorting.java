@@ -1,51 +1,90 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StringSorting {
 
-	public static Logger logger = Logger.getLogger(StringSorting.class.getName());
+	public static final Logger logger = Logger.getLogger(StringSorting.class.getName());
 
 	private String original;
-	//FIXME
-	private ArrayList<String> array;
-	private Map<Character, ArrayList<String>> map = new HashMap<>();
+	Comparator<String> comparator;
+	Comparator<Character> keyComparator;
+	private Map<Character, ArrayList<String>> map = new TreeMap<>();
 
 	public StringSorting() {
 	}
 
-	public StringSorting(String original) {
+	public StringSorting(String original, Comparator<String> arrayComparator, Comparator<Character> keyComparator) {
 		this.original = original;
+		this.comparator = arrayComparator;
+		this.keyComparator = keyComparator;
+		this.map = new TreeMap<>(keyComparator);
 	}
 
-	private void parseString() {
-		String[] splitResult = original.split(" ");
+	public Map<Character, ArrayList<String>> getMap() {
+		Map<Character, ArrayList<String>> clonedMap = new HashMap<>();
+		Set<Entry<Character, ArrayList<String>>> clonedEntrySet = map.entrySet();
 
-		for (String stringSplitResult : splitResult) {
-			Character key = null;
+		for (Entry<Character, ArrayList<String>> entry : clonedEntrySet) {
+			clonedMap.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+		}
 
-			//TODO: проверка с помощью try/catch
-			try {
-				key = Character.toLowerCase(stringSplitResult.charAt(0));
-			} catch (StringIndexOutOfBoundsException e) {
-				logger.log(Level.WARNING, "String must be not empty");
+		return clonedMap;
+	}
+
+	public void parseString() {
+
+		if (original == null || original.replaceAll("\\s+", " ").trim().isEmpty()) {
+			logger.log(Level.WARNING, "String must be not null or empty");
+		} else {
+
+			original = original.replaceAll("\\s+", " ").trim();
+
+			String[] splitResult = original.split(" ");
+
+			for (String stringSplitResult : splitResult) {
+
+				Character key = Character.toLowerCase(stringSplitResult.charAt(0));
+
+				map.compute(key, (letter, array) -> {
+					if (array == null) {
+						array = new ArrayList<>();
+					}
+					array.add(stringSplitResult);
+					return array;
+				});
+
 			}
 
-			//TODO: compute?
-			ArrayList<String> arrayListByKey = map.get(key);
+			sortMap();
+		}
+	}
 
-			if (arrayListByKey != null) {
-				arrayListByKey.add(stringSplitResult);
-			} else {
-				arrayListByKey = new ArrayList<>();
-				arrayListByKey.add(stringSplitResult);
-				map.put(key, arrayListByKey);
+	public void print() {
+		List<Character> keyList = new ArrayList<>(map.keySet());
+
+		for (Character key : keyList) {
+
+			ArrayList<String> arrayList = map.get(key);
+
+			if (arrayList.size() > 1) {
+
+				System.out.print("Key " + key + " :");
+
+				for (String arrayElement : arrayList) {
+					System.out.print(" " + arrayElement);
+				}
+
+				System.out.println();
 			}
 		}
 	}
@@ -57,35 +96,7 @@ public class StringSorting {
 
 			ArrayList<String> arrayListForSort = map.get(key);
 
-			//FIXME - comparator создается каждый раз в цикле. Зачем?
-			arrayListForSort.sort(new DefaultComparator());
-
-			//FIXME? put - не бесплатая операция, она необходима тут?
-			map.put(key, arrayListForSort);
-		}
-
-	}
-
-	public void printResult() {
-
-		parseString();
-
-		sortMap();
-
-		Set<Character> keySet = map.keySet();
-
-		for (Character key : keySet) {
-
-			ArrayList<String> arrayList = map.get(key);
-
-			if (arrayList.size() > 1) {
-				System.out.print("Key " + key + " :");
-				for (String arrayElement : arrayList) {
-					System.out.print(" " + arrayElement);
-				}
-
-				System.out.println();
-			}
+			arrayListForSort.sort(comparator);
 		}
 	}
 }
