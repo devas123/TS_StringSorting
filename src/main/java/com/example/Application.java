@@ -3,12 +3,14 @@ package com.example;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class Application {
 
-//	public static String STR = "Privet prekrasny novyy nadezhniy mir mart kak aprel asia";
+	public static String STR = "Privet prekrasny novyy nadezhniy mir mart kak aprel asia";
 //	public static String STR = null;
-	public static String STR = "";
+//	public static String STR = "";
 //	public static String STR = "    ";
 //	public static String STR = "asdasd bsd bsdf bs";
 //	public static String STR = "  Привет прекрасный Привет новый мой мир мой   ангел анапа жетон   ";
@@ -26,15 +28,16 @@ public class Application {
 			return o1.compareTo(o2);
 		});
 		stringSorting.parseString();
-		stringSorting.print();
-		stringSorting.print();
+//		stringSorting.print();
+
+		StringSortingV2 stringSortingV2 = new StringSortingV2();
+		Map<Character, List<String>> resultMap = stringSortingV2.parseString(STR, (o1, o2) -> {
+			return o1.compareTo(o2);
+		});
+
+		Map<Character, List<String>> sortedMap = stringSortingV2.sortingMap(resultMap, arrayComparator);
 		
-		StringSorting stringSorting2 = new StringSorting();
-		stringSorting2.parseString();
-		stringSorting2.print();
-//		stringSorting.printResult();
-//		stringSorting.printResult();
-//		stringSorting.printResult();
-//		stringSorting.printResult();
+		stringSortingV2.printMap(sortedMap);
+		stringSortingV2.printMap(sortedMap);
 	}
 }

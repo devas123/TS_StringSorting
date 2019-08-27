@@ -31,7 +31,7 @@ public class StringSorting {
 	}
 
 	public Map<Character, ArrayList<String>> getMap() {
-		Map<Character, ArrayList<String>> clonedMap = new HashMap<>();
+		Map<Character, ArrayList<String>> clonedMap = new TreeMap<>();
 		Set<Entry<Character, ArrayList<String>>> clonedEntrySet = map.entrySet();
 
 		for (Entry<Character, ArrayList<String>> entry : clonedEntrySet) {
